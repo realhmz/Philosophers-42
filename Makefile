@@ -15,3 +15,10 @@ all : $(OBJ)
 
 .c.o :
 	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	@rm -f $(OBJ)
+fclean:
+	@rm  -f $(NAME) $(OBJ)
+
+re:    fclean all
