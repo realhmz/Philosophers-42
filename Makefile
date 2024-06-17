@@ -4,14 +4,15 @@ C_FLAGS = -Wall -Wextra
 
 SRC =	parce.c\
 		libft_utils.c\
+		philo.c\
 
 OBJ = $(SRC:.c=.o)
 
-NAME : $(OBJ)
+all : $(NAME)
 	
 
-all : $(OBJ)
-	$(CC) $(C_FLAGS) $(OBJ) -o $(NAME)
+$(NAME) : $(OBJ)
+	$(CC) $(C_FLAGS) $(OBJ) -o $(NAME) -fsanitize=thread
 
 .c.o :
 	$(CC) $(CFLAGS) -c $< -o $@

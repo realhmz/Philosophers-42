@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/06/17 19:07:52 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/06/17 19:36:37 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int    parcing(t_param *param, int ac, char** av)
     {
         param->t_must_eat = ft_atoi(av[5]);
         param->must_flag = 1;
-        printf("t_must_eat %d\n", param->must_flag);
+        printf("t_must_eat %d\n", param->t_must_eat);
     }
     
     printf("params %d\n", param->n_of_philos);

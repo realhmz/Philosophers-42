@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/06/17 19:07:23 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/06/17 19:46:08 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 #include <pthread.h>
 #include <time.h>
 
-int	ft_atoi(const char *nptr);
-int ft_strlen(char *str);
 
 typedef struct s_philo
 {
@@ -30,7 +28,6 @@ typedef struct s_philo
 	int	is_eating;
 	int	is_sleeping;
 	int	using_fork;
-	pthread_mutex_t	mutex;
 
 } t_philo;
 
@@ -43,7 +40,16 @@ typedef struct s_params
 	int	t_must_eat;
 	int	must_flag;
 	t_philo *philo;
+	pthread_mutex_t	*mutex;
+	pthread_t *thread;
 
 } t_param;
+
+int	ft_atoi(const char *nptr);
+int ft_strlen(char *str);
+int philosophers(t_param *param);
+int create_threads(t_param *param);
+int	create_mutex(t_param *param);
+void	*routine(void *param);
 
 #endif
