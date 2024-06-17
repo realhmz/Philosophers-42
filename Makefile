@@ -5,6 +5,7 @@ C_FLAGS = -Wall -Wextra
 SRC =	parce.c\
 		libft_utils.c\
 		philo.c\
+		utils.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/06/17 19:54:56 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/06/17 20:24:40 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int create_threads(t_param *param)
 			printf("ERROR\n");
 			return (1);
 		}
-		pthread_join(param->thread[i],NULL);
 		i++;
 	}
 	return (0);
@@ -62,14 +61,15 @@ int	create_mutex(t_param *param)
 int l = 0;
 void	*routine(void *param)
 {
+	// printf("HAAAAAAAAAAAAAAAH\n");
 	t_param *data;
 	// static int l;
 	data = (t_param *)param;
 	int i = 0;
-	while (i < 1000000)
+	while (i < 10000000)
 	{
-		l++;
 		i++;
+		l++;
 	}
 	printf("%d\n",l);
 }

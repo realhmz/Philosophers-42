@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/06/17 19:46:08 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/06/17 20:31:21 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <time.h>
+#include <sys/time.h>
 
 
 typedef struct s_philo
@@ -51,5 +52,7 @@ int philosophers(t_param *param);
 int create_threads(t_param *param);
 int	create_mutex(t_param *param);
 void	*routine(void *param);
+long    what_time();
+void    ms_sleep(int time);
 
 #endif

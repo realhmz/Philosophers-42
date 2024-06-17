@@ -9,13 +9,13 @@ pthread_mutex_t mutex;
 void* print_it()
 {
 	int j = 0;
-	pthread_mutex_lock(&mutex);
+	// pthread_mutex_lock(&mutex);
 	while (j < 100000000)
 	{
 		j++;
 		i++;
 	}
-	pthread_mutex_unlock(&mutex);
+	// pthread_mutex_unlock(&mutex);
 	printf("%d\n",i);
 }
 
