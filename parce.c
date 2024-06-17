@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parce.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: realhmz <realhmz@student.42.fr>            +#+  +:+       +#+        */
+/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/06/12 15:55:46 by realhmz          ###   ########.fr       */
+/*   Updated: 2024/06/17 19:07:52 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 int    parcing(t_param *param, int ac, char** av)
 {
-    param->philos = ft_atoi(av[1]);
+    param->n_of_philos = ft_atoi(av[1]);
     param->t_die = ft_atoi(av[2]);
     param->t_eat = ft_atoi(av[3]);
     param->t_sleep = ft_atoi(av[4]);
-    if (param->philos > 200 || param->philos <= 0)
+    if (param->n_of_philos > 200 || param->n_of_philos <= 0)
         return (1);
     if (ac == 6)
     {
@@ -28,7 +28,7 @@ int    parcing(t_param *param, int ac, char** av)
         printf("t_must_eat %d\n", param->must_flag);
     }
     
-    printf("params %d\n", param->philos);
+    printf("params %d\n", param->n_of_philos);
     printf("t_die %d\n", param->t_die);
     printf("t_eat %d\n", param->t_eat);
     printf("t_sleep %d\n", param->t_sleep);
