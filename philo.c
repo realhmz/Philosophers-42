@@ -3,73 +3,107 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/06/17 20:24:40 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/04 21:25:28 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 
-int philosophers(t_param *param)
+int philosophers(t_philo *param)
 {
-    param->philo = malloc(sizeof(t_philo) * (param->n_of_philos));
-    param->thread = malloc(sizeof(pthread_t) * (param->n_of_philos + 1));
-    param->mutex = malloc(sizeof(pthread_mutex_t) * (param->n_of_philos));
-    if (create_threads(param) != 0)
-        return (1);
+	if (create_list(param) != 0)
+		return (-1);
 	if (create_mutex(param) != 0)
-		return (1);
+		return (-1);
+	if (create_threads(param) != 0)
+		return (-1);
 	
+	
+	return (0);
 }
 
-int create_threads(t_param *param)
+int	create_list(t_philo *philo)
+{
+	t_philo	*tmp;
+	t_philo *last;
+	int		i;
+
+	i = 1;
+	philo->id = 1;
+	tmp = philo;
+	last = philo;
+	while (i < philo->data.n_of_philos)
+	{
+		ft_lst_add_back(tmp, ft_lstnew(&philo->data), i + 1);
+		i++;
+		tmp = tmp->right;
+		tmp->left =last;
+		last = last->right;
+	}
+	philo->left = tmp;
+	tmp->right = philo;	
+	return (0);
+}
+int create_threads(t_philo *param)
 {
     int	i;
 
 	i = 0;
-	while (i < param->n_of_philos)
+	while (i < param->data.n_of_philos)
 	{
-		if (pthread_create(&param->thread[i],NULL, &routine, (void *)param) != 0)
+		if (pthread_create(&param->philo,NULL, &routine, (void *)param) != 0)
 		{
 			printf("ERROR\n");
 			return (1);
 		}
+		param->data.last_meal = what_time();
+		pthread_detach(param->philo);
+		param = param->right;
 		i++;
 	}
+		// pthread_join(param->philo, NULL);
 	return (0);
 }
 
-int	create_mutex(t_param *param)
+int	create_mutex(t_philo *param)
 {
 	int	i;
 
 	i = 0;
-	while (i < param->n_of_philos)
+	while (i < param->data.n_of_philos)
 	{
-		if (pthread_mutex_init(&param->mutex[i], NULL) != 0)
+		if (pthread_mutex_init(&param->fork, NULL) != 0)
 			{
 				printf("ERROR\n");
 				return (1);
 			}
+		pthread_mutex_init(&param->data.print,NULL);
+		pthread_mutex_init(&param->cycle_mutex,NULL);
+		pthread_mutex_init(&param->last_meal_mutex,NULL);
+		param = param->right;
 		i++;
 	}
 	return (0);
 }
-int l = 0;
+
 void	*routine(void *param)
 {
-	// printf("HAAAAAAAAAAAAAAAH\n");
-	t_param *data;
-	// static int l;
-	data = (t_param *)param;
-	int i = 0;
-	while (i < 10000000)
+	t_philo *data;
+	data = (t_philo *)param;
+	
+	static long l;
+	// long i = 0;
+	// printf("time is %ld\n", what_time());
+	while (1)
 	{
-		i++;
-		l++;
+		
+		is_eating(data);
+		ms_sleep(200);
 	}
-	printf("%d\n",l);
+	
+	return(data);
 }
