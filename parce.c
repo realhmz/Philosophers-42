@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/04 21:30:21 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/07/16 21:45:22 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,33 @@ int main(int ac, char **av)
         return (1);
     if (philosophers(philo) != 0)
         return (1);
+        while (1) ;
     
 }
 
 void    is_eating(t_philo *philo)
 {
-    pthread_mutex_lock(&philo->fork);
-    status(philo,2);
-    pthread_mutex_lock(&philo->left->fork);
-    status(philo,2);
-    status(philo, 1);
-    pthread_mutex_lock(&philo->left->fork);
-    pthread_mutex_lock(&philo->fork);
+    
+    if (philo->taken == 0 && philo->left->taken == 0)
+    {   
+        pthread_mutex_lock(&philo->fork);
+        pthread_mutex_lock(&philo->data.print);
+        philo->taken = 1;
+        pthread_mutex_unlock(&philo->data.print);
+        status(philo,2);
+        pthread_mutex_unlock(&philo->fork);
+        pthread_mutex_lock(&philo->left->fork);
+        philo->left->taken = 1;
+        status(philo,5);
+        status(philo, 1);
+        pthread_mutex_unlock(&philo->left->fork);
+        pthread_mutex_lock(&philo->data.print);
+        philo->left->taken = 0;
+        printf("id %d , Droped left fork\n", philo->id);
+        pthread_mutex_unlock(&philo->data.print);
+        philo->taken = 0;
+        printf("id %d , Droped right fork\n", philo->id);
+    }
 }
 void    status(t_philo *philo, int action)
 {
@@ -68,12 +83,14 @@ void    status(t_philo *philo, int action)
     if (action == 1)
         printf("is eating\n");
     if (action == 2)
-        printf("Has takken a fork\n");
+        printf("Has takken right fork\n");
+    if (action == 5)
+        printf("Has takken left fork\n");
     if (action == 3)
         printf("is Thinking\n");
     if (action == 4)
         printf("is sleeping\n");
-    pthread_mutex_lock(&philo->last_meal_mutex);
-    pthread_mutex_lock(&philo->data.print);
+    pthread_mutex_unlock(&philo->last_meal_mutex);
+    pthread_mutex_unlock(&philo->data.print);
     
 }

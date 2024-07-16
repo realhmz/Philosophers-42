@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/04 21:06:20 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/07/16 21:09:21 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_philo
 	pthread_mutex_t	last_meal_mutex;
 	t_philo_data	data;
 	pthread_t		philo;
+	int				taken;
 	pthread_mutex_t	fork;
 	struct s_philo	*right;
 	struct s_philo	*left;

@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/07/04 21:25:28 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/07/16 21:45:56 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int create_threads(t_philo *param)
 	i = 0;
 	while (i < param->data.n_of_philos)
 	{
+		param->taken = 0;
 		if (pthread_create(&param->philo,NULL, &routine, (void *)param) != 0)
 		{
 			printf("ERROR\n");
@@ -98,9 +99,13 @@ void	*routine(void *param)
 	static long l;
 	// long i = 0;
 	// printf("time is %ld\n", what_time());
+		if (data->id % 2 == 0)
+			ms_sleep(100);
+
 	while (1)
 	{
-		
+		// printf("id :  %d, taken  %d , \n",data->id, data->taken);
+		// drop_it(data);
 		is_eating(data);
 		ms_sleep(200);
 	}
