@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/07/16 21:45:56 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/07/19 21:41:08 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int create_threads(t_philo *param)
 	while (i < param->data.n_of_philos)
 	{
 		param->taken = 0;
+		param->timer = what_time();
+		param->last_eat = what_time();
 		if (pthread_create(&param->philo,NULL, &routine, (void *)param) != 0)
 		{
 			printf("ERROR\n");
@@ -106,7 +108,17 @@ void	*routine(void *param)
 	{
 		// printf("id :  %d, taken  %d , \n",data->id, data->taken);
 		// drop_it(data);
+		// printf("id  %d time since last meal  %ld \n",data->id, what_time()  - data->data.last_meal);
+		// data->data.last_meal
+		if (what_time() - data->last_eat > 410)
+		{
+			printf("%d  iis dead at %ld  \n", data->id, what_time() - data->last_eat);
+		}
+		
 		is_eating(data);
+		ms_sleep(200);
+		data->last_eat = what_time();
+		printf("%ld  %d  is sleeping\n", what_time() - data->timer, data->id);
 		ms_sleep(200);
 	}
 	

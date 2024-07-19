@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parce.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/16 21:45:22 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/07/19 21:31:53 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,26 +59,24 @@ void    is_eating(t_philo *philo)
         pthread_mutex_lock(&philo->data.print);
         philo->taken = 1;
         pthread_mutex_unlock(&philo->data.print);
-        status(philo,2);
         pthread_mutex_unlock(&philo->fork);
         pthread_mutex_lock(&philo->left->fork);
         philo->left->taken = 1;
-        status(philo,5);
         status(philo, 1);
         pthread_mutex_unlock(&philo->left->fork);
         pthread_mutex_lock(&philo->data.print);
         philo->left->taken = 0;
-        printf("id %d , Droped left fork\n", philo->id);
+        // printf("id %d , Droped left fork\n", philo->id);
         pthread_mutex_unlock(&philo->data.print);
         philo->taken = 0;
-        printf("id %d , Droped right fork\n", philo->id);
+        // printf("id %d , Droped right fork\n", philo->id);
     }
 }
 void    status(t_philo *philo, int action)
 {
     pthread_mutex_lock(&philo->data.print);
     pthread_mutex_lock(&philo->last_meal_mutex);
-    printf("%ld  ", what_time());
+    printf("%ld  ", what_time() - philo->timer);
     printf("%d  ",philo->id);
     if (action == 1)
         printf("is eating\n");

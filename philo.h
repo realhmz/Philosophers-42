@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/16 21:09:21 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/07/19 21:34:30 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ typedef struct s_philo
 	t_philo_data	data;
 	pthread_t		philo;
 	int				taken;
+	long			timer;
+	long			last_eat;
 	pthread_mutex_t	fork;
 	struct s_philo	*right;
 	struct s_philo	*left;
