@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/07/19 21:41:08 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/19 22:35:03 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,25 +101,16 @@ void	*routine(void *param)
 	static long l;
 	// long i = 0;
 	// printf("time is %ld\n", what_time());
-		if (data->id % 2 == 0)
-			ms_sleep(100);
+		if (data->id % 2 != 0)
+			ms_sleep(200);
 
 	while (1)
 	{
-		// printf("id :  %d, taken  %d , \n",data->id, data->taken);
-		// drop_it(data);
-		// printf("id  %d time since last meal  %ld \n",data->id, what_time()  - data->data.last_meal);
-		// data->data.last_meal
-		if (what_time() - data->last_eat > 410)
-		{
-			printf("%d  iis dead at %ld  \n", data->id, what_time() - data->last_eat);
-		}
-		
 		is_eating(data);
-		ms_sleep(200);
-		data->last_eat = what_time();
+		// pthread_mutex_lock(&data->last_meal_mutex);
 		printf("%ld  %d  is sleeping\n", what_time() - data->timer, data->id);
 		ms_sleep(200);
+		// pthread_mutex_unlock(&data->last_meal_mutex);
 	}
 	
 	return(data);

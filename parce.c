@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/19 21:31:53 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/19 22:44:24 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void    is_eating(t_philo *philo)
 {
     
     if (philo->taken == 0 && philo->left->taken == 0)
-    {   
+    {
         pthread_mutex_lock(&philo->fork);
         pthread_mutex_lock(&philo->data.print);
         philo->taken = 1;
@@ -62,7 +62,10 @@ void    is_eating(t_philo *philo)
         pthread_mutex_unlock(&philo->fork);
         pthread_mutex_lock(&philo->left->fork);
         philo->left->taken = 1;
+        philo->thinking = 0;
         status(philo, 1);
+		philo->last_eat = what_time();
+		ms_sleep(200);
         pthread_mutex_unlock(&philo->left->fork);
         pthread_mutex_lock(&philo->data.print);
         philo->left->taken = 0;
@@ -71,7 +74,15 @@ void    is_eating(t_philo *philo)
         philo->taken = 0;
         // printf("id %d , Droped right fork\n", philo->id);
     }
+    if (philo->thinking == 0)
+    {
+        printf("%ld  %d  is thinking\n", what_time() - philo->timer, philo->id);
+        philo->thinking = 1;
+    }
+    else
+        is_eating(philo);
 }
+
 void    status(t_philo *philo, int action)
 {
     pthread_mutex_lock(&philo->data.print);

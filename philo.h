@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/19 21:34:30 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/19 22:39:28 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_philo
 	int				taken;
 	long			timer;
 	long			last_eat;
+	int				thinking;
 	pthread_mutex_t	fork;
 	struct s_philo	*right;
 	struct s_philo	*left;

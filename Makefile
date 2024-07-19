@@ -13,7 +13,7 @@ all : $(NAME)
 	
 
 $(NAME) : $(OBJ)
-	$(CC) $(C_FLAGS) $(OBJ) -o $(NAME)  -fsanitize=thread -g3
+	$(CC) $(C_FLAGS) $(OBJ) -o $(NAME)  -O3 -fsanitize=address
 
 	
 
