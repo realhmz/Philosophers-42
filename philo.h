@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/19 22:39:28 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/24 19:12:01 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 // 	int	id;
 // } t_philo;
 
+
 typedef struct s_philo_data
 {
 	int				n_of_philos;
@@ -40,8 +41,8 @@ typedef struct s_philo_data
 	long			t_sleep;
 	long			t_must_eat;
 	long			must_flag;
+	long			time;
 	pthread_mutex_t	print;
-	long		time;
 	long		last_meal;
 }	t_philo_data;
 
@@ -49,7 +50,6 @@ typedef struct s_philo
 {
 	int				id;
 	long			cycle;
-	pthread_mutex_t	cycle_mutex;
 	pthread_mutex_t	last_meal_mutex;
 	t_philo_data	data;
 	pthread_t		philo;
@@ -57,6 +57,8 @@ typedef struct s_philo
 	long			timer;
 	long			last_eat;
 	int				thinking;
+	pthread_mutex_t	timer_mtx;
+	pthread_mutex_t	taken_mtx;
 	pthread_mutex_t	fork;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -91,5 +93,5 @@ int	create_list(t_philo *philo);
 t_philo	*ft_lstnew(t_philo_data *data);
 void    print_data(t_philo_data data);
 void    status(t_philo *philo, int action);
-void    is_eating(t_philo *philo);
+int    is_eating(t_philo *philo);
 #endif

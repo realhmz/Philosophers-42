@@ -6,7 +6,7 @@
 /*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/07/19 22:35:03 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/24 19:14:20 by reahmz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	create_list(t_philo *philo)
 		last = last->right;
 	}
 	philo->left = tmp;
-	tmp->right = philo;	
+	tmp->right = philo;
 	return (0);
 }
 int create_threads(t_philo *param)
@@ -66,6 +66,7 @@ int create_threads(t_philo *param)
 		param->data.last_meal = what_time();
 		pthread_detach(param->philo);
 		param = param->right;
+		param->data = param->left->data;
 		i++;
 	}
 		// pthread_join(param->philo, NULL);
@@ -84,8 +85,11 @@ int	create_mutex(t_philo *param)
 				printf("ERROR\n");
 				return (1);
 			}
-		pthread_mutex_init(&param->data.print,NULL);
-		pthread_mutex_init(&param->cycle_mutex,NULL);
+		pthread_mutex_init(&param->taken_mtx,NULL);
+		pthread_mutex_init(&param->data.print, NULL);
+		pthread_mutex_init(&param->timer_mtx,NULL);
+		// pthread_mutex_init(&param->data.print,NULL);
+		// pthread_mutex_init(&param->cycle_mutex,NULL);
 		pthread_mutex_init(&param->last_meal_mutex,NULL);
 		param = param->right;
 		i++;
@@ -98,19 +102,29 @@ void	*routine(void *param)
 	t_philo *data;
 	data = (t_philo *)param;
 	
-	static long l;
-	// long i = 0;
-	// printf("time is %ld\n", what_time());
-		if (data->id % 2 != 0)
-			ms_sleep(200);
-
+	if (data->id % 2 != 0)
+		ms_sleep(data->data.t_sleep);
 	while (1)
 	{
-		is_eating(data);
-		// pthread_mutex_lock(&data->last_meal_mutex);
-		printf("%ld  %d  is sleeping\n", what_time() - data->timer, data->id);
-		ms_sleep(200);
-		// pthread_mutex_unlock(&data->last_meal_mutex);
+		// print_data(data->data);
+		pthread_mutex_lock(&data->data.print);
+		pthread_mutex_lock(&data->last_meal_mutex);
+		if (what_time() - data->last_eat > data->data.t_die)
+		{
+			printf("%ld  %d  is dead\n",what_time() - data->timer, data->id);
+			exit(1);
+		}
+		pthread_mutex_unlock(&data->last_meal_mutex);
+		pthread_mutex_unlock(&data->data.print);
+		
+		if (!is_eating(data))
+		{
+			pthread_mutex_lock(&data->data.print);
+			printf("%ld  %d  is sleeping\n", what_time() - data->timer, data->id);
+			pthread_mutex_unlock(&data->data.print);
+			ms_sleep(data->data.t_sleep);			
+		}
+		
 	}
 	
 	return(data);
