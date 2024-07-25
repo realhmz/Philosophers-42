@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parce.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/24 19:12:43 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/25 13:08:45 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ int main(int ac, char **av)
 int    is_eating(t_philo *philo)
 {
 	
-	if (philo->taken == 0 && philo->left->taken == 0)
-	{
+	// if (philo->taken == 0 && philo->left->taken == 0)
+	// {
 		pthread_mutex_lock(&philo->fork);
 		pthread_mutex_lock(&philo->taken_mtx);
 		philo->taken = 1;
@@ -65,8 +65,8 @@ int    is_eating(t_philo *philo)
 		pthread_mutex_lock(&philo->left->fork);
 		pthread_mutex_lock(&philo->taken_mtx);
 		philo->left->taken = 1;
-		philo->thinking = 0;
 		pthread_mutex_unlock(&philo->taken_mtx);
+		philo->thinking = 0;
 		status(philo, 1);
 		pthread_mutex_lock(&philo->last_meal_mutex);
 		philo->last_eat = what_time();
@@ -81,7 +81,7 @@ int    is_eating(t_philo *philo)
 		pthread_mutex_unlock(&philo->taken_mtx);
 		return (0);
 		// printf("id %d , Droped right fork\n", philo->id);
-	}
+	// }
 	if (philo->thinking == 0)
 	{
 		pthread_mutex_lock(&philo->data.print);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/07/24 19:14:20 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/07/25 13:14:10 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int create_threads(t_philo *param)
 			return (1);
 		}
 		param->data.last_meal = what_time();
-		pthread_detach(param->philo);
+		// pthread_detach(param->philo);
 		param = param->right;
 		param->data = param->left->data;
 		i++;
@@ -122,9 +122,11 @@ void	*routine(void *param)
 			pthread_mutex_lock(&data->data.print);
 			printf("%ld  %d  is sleeping\n", what_time() - data->timer, data->id);
 			pthread_mutex_unlock(&data->data.print);
-			ms_sleep(data->data.t_sleep);			
+			ms_sleep(data->data.t_sleep);
 		}
-		
+			// pthread_mutex_lock(&data->data.print);
+			printf("%ld  %d  is thinking\n", what_time() - data->timer, data->id);
+			// pthread_mutex_unlock(&data->data.print);
 	}
 	
 	return(data);
