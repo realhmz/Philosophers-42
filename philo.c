@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/08/19 20:11:54 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/19 22:59:45 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,17 +70,16 @@ int create_threads(t_philo *param)
     int	i;
 
 	i = 0;
+	param->data->time = what_time();
 	while (i < param->data->n_of_philos)
 	{
-		param->taken = 0;
-		param->timer = what_time();
 		param->last_eat = what_time();
 		if (pthread_create(&param->philo,NULL, &routine, (void *)param) != 0)
 		{
 			printf("ERROR\n");
 			return (1);
 		}
-		param->data->last_meal = what_time();
+		// param->data->last_meal = what_time();
 		// pthread_detach(param->philo);
 		param = param->right;
 		param->data = param->left->data;
@@ -102,21 +101,21 @@ int	create_mutex(t_philo *param)
 				printf("ERROR\n");
 				return (1);
 			}
-		pthread_mutex_init(&param->taken_mtx,NULL);
-		pthread_mutex_init(&param->data->print, NULL);
-		pthread_mutex_init(&param->timer_mtx,NULL);
+		// pthread_mutex_init(&param->taken_mtx,NULL);
+		// pthread_mutex_init(&param->timer_mtx,NULL);
 		// pthread_mutex_init(&param->data.print,NULL);
 		// pthread_mutex_init(&param->cycle_mutex,NULL);
-		pthread_mutex_init(&param->last_meal_mutex,NULL);
+		// pthread_mutex_init(&param->last_meal_mutex,NULL);
 		param = param->right;
 		i++;
 	}
+	pthread_mutex_init(&param->data->print, NULL);
 	return (0);
 }
 
 void	is_sleeping(t_philo *philo)
 {
-	printf("%ld  %d  is sleeping\n",what_time() - philo->timer,  philo->id);
+	status(philo, 4);
 	ms_sleep(philo->data->t_sleep);
 }
 
@@ -138,7 +137,10 @@ void	*routine(void *param)
 			exit (1);
 		is_eating(data);
 		is_sleeping(data);
-		printf("%ld  %d  is thinking\n", what_time() - data->timer, data->id);
+		if (data->data->flag == 0)
+			exit (1);
+		status(data, 3);
+		
 		
 		// pthread_mutex_lock(&data->data.print);
 		// pthread_mutex_unlock(&data->data.print);

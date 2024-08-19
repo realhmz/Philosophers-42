@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/19 20:07:20 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/19 22:59:18 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct s_philo_data
 	long			t_sleep;
 	long			t_must_eat;
 	long			must_flag;
-	long			time;
+	size_t			time;
 	pthread_mutex_t	print;
 	long		last_meal;
 	int			flag;

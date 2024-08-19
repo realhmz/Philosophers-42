@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/19 20:15:49 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/19 23:00:08 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ int main(int ac, char **av)
 		{
 			if ((what_time() - philo->last_eat) > philo->data->t_die)
 			{
-				printf("%ld  %d  is dead\n",what_time() - philo->timer, philo->id);
+				pthread_mutex_lock(&philo->data->print);
+				printf("%ld  %d  is dead\n",what_time() - philo->data->time, philo->id);
+				pthread_mutex_unlock(&philo->data->print);
 				philo->data->flag = 0;
 				exit (1);
 			}
@@ -71,10 +73,10 @@ int    is_eating(t_philo *philo)
 	if (philo->id % 2 != 0)
 	{
 		pthread_mutex_lock(&philo->left->fork);
-		printf("%ld  %d  has takken left fork\n",what_time() - philo->timer, philo->id);
+		status(philo, 5);
 		pthread_mutex_lock(&philo->fork);
-		printf("%ld  %d  has takken right fork\n",what_time() - philo->timer, philo->id);
-		printf("%ld  %d  is eating\n",what_time() - philo->timer, philo->id);
+		status(philo, 2);
+		status(philo, 1);
 		philo->last_eat = what_time();
 		ms_sleep(philo->data->t_eat);
 		pthread_mutex_unlock(&philo->left->fork);
@@ -83,17 +85,15 @@ int    is_eating(t_philo *philo)
 	else
 	{
 		pthread_mutex_lock(&philo->fork);
-		printf("%ld  %d  has takken right fork\n",what_time() - philo->timer, philo->id);
+		status(philo, 2);
 		pthread_mutex_lock(&philo->left->fork);
-		printf("%ld  %d  has takken left fork\n",what_time() - philo->timer, philo->id);
-		printf("%ld  %d  is eating\n",what_time() - philo->timer, philo->id);
+		status(philo, 5);
+		status(philo, 1);
 		philo->last_eat = what_time();
 		ms_sleep(philo->data->t_eat);
 		pthread_mutex_unlock(&philo->fork);
 		pthread_mutex_unlock(&philo->left->fork);	
 	}
-	
-	
 	return (0);
 }
 
@@ -101,16 +101,16 @@ void    status(t_philo *philo, int action)
 {
 	// pthread_mutex_lock(&philo->last_meal_mutex);
 	
-	pthread_mutex_lock(&philo->timer_mtx);
-	printf("%ld  ", what_time() - philo->timer);
+	size_t	time;
+
+	pthread_mutex_lock(&philo->data->print);
+	time = what_time() - philo->data->time;
+	printf("%ld  ", time);
 	printf("%d  ",philo->id);
-	pthread_mutex_unlock(&philo->timer_mtx);
 
 	if (action == 1)
 	{
-		pthread_mutex_lock(&philo->data->print);
 		printf("is eating\n");
-		pthread_mutex_unlock(&philo->data->print);
 	}
 	if (action == 2)
 		printf("Has takken right fork\n");
@@ -120,5 +120,5 @@ void    status(t_philo *philo, int action)
 		printf("is Thinking\n");
 	if (action == 4)
 		printf("is sleeping\n");
-	// pthread_mutex_unlock(&philo->last_meal_mutex);
+	pthread_mutex_unlock(&philo->data->print);
 }
