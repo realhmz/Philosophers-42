@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/07/25 13:14:10 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:11:54 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,37 @@ int	create_list(t_philo *philo)
 	t_philo *last;
 	int		i;
 
-	i = 1;
 	philo->id = 1;
 	tmp = philo;
 	last = philo;
-	while (i < philo->data.n_of_philos)
+	// if (philo->data.n_of_philos % 2 != 0)
+	// {
+	// 	i = philo->data.n_of_philos + 1;
+	// 	while (i > 0)
+	// 	{
+	// 		ft_lst_add_back(tmp, ft_lstnew(&philo->data), i - 1);
+	// 		i--;
+	// 		tmp = tmp->right;
+	// 		tmp->left =last;
+	// 		last = last->right;
+	// 	}
+	// 	philo->left = tmp;
+	// 	tmp->right = philo;	
+	// }
+	// else
 	{
-		ft_lst_add_back(tmp, ft_lstnew(&philo->data), i + 1);
-		i++;
-		tmp = tmp->right;
-		tmp->left =last;
-		last = last->right;
+		i = 1;
+		while (i < philo->data->n_of_philos)
+		{
+			ft_lst_add_back(tmp, ft_lstnew(philo->data), i + 1);
+			i++;
+			tmp = tmp->right;
+			tmp->left =last;
+			last = last->right;
+		}
+		philo->left = tmp;
+		tmp->right = philo;
 	}
-	philo->left = tmp;
-	tmp->right = philo;
 	return (0);
 }
 int create_threads(t_philo *param)
@@ -53,7 +70,7 @@ int create_threads(t_philo *param)
     int	i;
 
 	i = 0;
-	while (i < param->data.n_of_philos)
+	while (i < param->data->n_of_philos)
 	{
 		param->taken = 0;
 		param->timer = what_time();
@@ -63,7 +80,7 @@ int create_threads(t_philo *param)
 			printf("ERROR\n");
 			return (1);
 		}
-		param->data.last_meal = what_time();
+		param->data->last_meal = what_time();
 		// pthread_detach(param->philo);
 		param = param->right;
 		param->data = param->left->data;
@@ -78,7 +95,7 @@ int	create_mutex(t_philo *param)
 	int	i;
 
 	i = 0;
-	while (i < param->data.n_of_philos)
+	while (i < param->data->n_of_philos)
 	{
 		if (pthread_mutex_init(&param->fork, NULL) != 0)
 			{
@@ -86,7 +103,7 @@ int	create_mutex(t_philo *param)
 				return (1);
 			}
 		pthread_mutex_init(&param->taken_mtx,NULL);
-		pthread_mutex_init(&param->data.print, NULL);
+		pthread_mutex_init(&param->data->print, NULL);
 		pthread_mutex_init(&param->timer_mtx,NULL);
 		// pthread_mutex_init(&param->data.print,NULL);
 		// pthread_mutex_init(&param->cycle_mutex,NULL);
@@ -97,36 +114,34 @@ int	create_mutex(t_philo *param)
 	return (0);
 }
 
+void	is_sleeping(t_philo *philo)
+{
+	printf("%ld  %d  is sleeping\n",what_time() - philo->timer,  philo->id);
+	ms_sleep(philo->data->t_sleep);
+}
+
+
 void	*routine(void *param)
 {
 	t_philo *data;
 	data = (t_philo *)param;
 	
 	if (data->id % 2 != 0)
-		ms_sleep(data->data.t_sleep);
+	{
+		// qleb_o_chqleb(data);	
+		ms_sleep(50);
+	}
 	while (1)
 	{
-		// print_data(data->data);
-		pthread_mutex_lock(&data->data.print);
-		pthread_mutex_lock(&data->last_meal_mutex);
-		if (what_time() - data->last_eat > data->data.t_die)
-		{
-			printf("%ld  %d  is dead\n",what_time() - data->timer, data->id);
-			exit(1);
-		}
-		pthread_mutex_unlock(&data->last_meal_mutex);
-		pthread_mutex_unlock(&data->data.print);
+
+		if (data->data->flag == 0)
+			exit (1);
+		is_eating(data);
+		is_sleeping(data);
+		printf("%ld  %d  is thinking\n", what_time() - data->timer, data->id);
 		
-		if (!is_eating(data))
-		{
-			pthread_mutex_lock(&data->data.print);
-			printf("%ld  %d  is sleeping\n", what_time() - data->timer, data->id);
-			pthread_mutex_unlock(&data->data.print);
-			ms_sleep(data->data.t_sleep);
-		}
-			// pthread_mutex_lock(&data->data.print);
-			printf("%ld  %d  is thinking\n", what_time() - data->timer, data->id);
-			// pthread_mutex_unlock(&data->data.print);
+		// pthread_mutex_lock(&data->data.print);
+		// pthread_mutex_unlock(&data->data.print);
 	}
 	
 	return(data);

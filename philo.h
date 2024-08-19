@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/24 19:12:01 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/08/19 20:07:20 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_philo_data
 	long			time;
 	pthread_mutex_t	print;
 	long		last_meal;
+	int			flag;
 }	t_philo_data;
 
 typedef struct s_philo
@@ -51,7 +52,7 @@ typedef struct s_philo
 	int				id;
 	long			cycle;
 	pthread_mutex_t	last_meal_mutex;
-	t_philo_data	data;
+	t_philo_data	*data;
 	pthread_t		philo;
 	int				taken;
 	long			timer;
@@ -85,13 +86,13 @@ int philosophers(t_philo *param);
 int create_threads(t_philo *param);
 int	create_mutex(t_philo *param);
 void	*routine(void *param);
-long    what_time();
-void    ms_sleep(int time);
+size_t    what_time();
+int    ms_sleep(size_t milliseconds);
 void    ft_lst_add_back(t_philo *philo, t_philo *new, int id);
 // void    fill_data(t_philo *philo);
 int	create_list(t_philo *philo);
 t_philo	*ft_lstnew(t_philo_data *data);
-void    print_data(t_philo_data data);
+void    print_data(t_philo_data *data);
 void    status(t_philo *philo, int action);
 int    is_eating(t_philo *philo);
 #endif

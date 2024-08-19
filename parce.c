@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/25 13:08:45 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:15:49 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,23 @@
 
 int    parcing(t_philo *philo, int ac, char** av)
 {
-	philo->data.n_of_philos = ft_atoi(av[1]);
-	philo->data.t_die = ft_atoi(av[2]);
-	philo->data.t_eat = ft_atoi(av[3]);
-	philo->data.t_sleep = ft_atoi(av[4]);
-	if (philo->data.n_of_philos > 200 || philo->data.n_of_philos <= 0)
+	philo->data = malloc(sizeof(t_philo_data));
+	philo->data->n_of_philos = ft_atoi(av[1]);
+	philo->data->t_die = ft_atoi(av[2]);
+	philo->data->t_eat = ft_atoi(av[3]);
+	philo->data->t_sleep = ft_atoi(av[4]);
+	if (philo->data->n_of_philos > 200 || philo->data->n_of_philos <= 0)
 		return (1);
-	philo->data.t_must_eat = 0;
-	philo->data.must_flag = 0;
+	philo->data->t_must_eat = 0;
+	philo->data->must_flag = 0;
 	if (ac == 6)
 	{
-		philo->data.t_must_eat = ft_atoi(av[5]);
-		philo->data.must_flag = 1;
+		philo->data->t_must_eat = ft_atoi(av[5]);
+		philo->data->must_flag = 1;
 	}
-	philo->data.last_meal = 0;
-	philo->data.time = 0;
+	philo->data->last_meal = 0;
+	philo->data->time = 0;
+	philo->data->flag = 1;
 	// printf("philos %d\n", philo->data.n_of_philos);
 	// printf("t_die %ld\n", philo->data.t_die);
 	// printf("t_eat %ld\n", philo->data.t_eat);
@@ -49,48 +51,50 @@ int main(int ac, char **av)
 		return (1);
 	if (philosophers(philo) != 0)
 		return (1);
-		while (1) ;
-	
+	while (1)
+	{
+		while (philo)
+		{
+			if ((what_time() - philo->last_eat) > philo->data->t_die)
+			{
+				printf("%ld  %d  is dead\n",what_time() - philo->timer, philo->id);
+				philo->data->flag = 0;
+				exit (1);
+			}
+			philo = philo->right;
+		}
+	}
 }
 
 int    is_eating(t_philo *philo)
 {
-	
-	// if (philo->taken == 0 && philo->left->taken == 0)
-	// {
-		pthread_mutex_lock(&philo->fork);
-		pthread_mutex_lock(&philo->taken_mtx);
-		philo->taken = 1;
-		pthread_mutex_unlock(&philo->taken_mtx);
-		pthread_mutex_lock(&philo->left->fork);
-		pthread_mutex_lock(&philo->taken_mtx);
-		philo->left->taken = 1;
-		pthread_mutex_unlock(&philo->taken_mtx);
-		philo->thinking = 0;
-		status(philo, 1);
-		pthread_mutex_lock(&philo->last_meal_mutex);
-		philo->last_eat = what_time();
-		pthread_mutex_unlock(&philo->last_meal_mutex);
-		ms_sleep(philo->data.t_eat);
-		pthread_mutex_unlock(&philo->fork);
-		pthread_mutex_unlock(&philo->left->fork);
-		pthread_mutex_lock(&philo->taken_mtx);
-		philo->left->taken = 0;
-		// printf("id %d , Droped left fork\n", philo->id);
-		philo->taken = 0;
-		pthread_mutex_unlock(&philo->taken_mtx);
-		return (0);
-		// printf("id %d , Droped right fork\n", philo->id);
-	// }
-	if (philo->thinking == 0)
+	if (philo->id % 2 != 0)
 	{
-		pthread_mutex_lock(&philo->data.print);
-		printf("%ld  %d  is thinking\n", what_time() - philo->timer, philo->id);
-		pthread_mutex_unlock(&philo->data.print);
-		philo->thinking = 1;
+		pthread_mutex_lock(&philo->left->fork);
+		printf("%ld  %d  has takken left fork\n",what_time() - philo->timer, philo->id);
+		pthread_mutex_lock(&philo->fork);
+		printf("%ld  %d  has takken right fork\n",what_time() - philo->timer, philo->id);
+		printf("%ld  %d  is eating\n",what_time() - philo->timer, philo->id);
+		philo->last_eat = what_time();
+		ms_sleep(philo->data->t_eat);
+		pthread_mutex_unlock(&philo->left->fork);
+		pthread_mutex_unlock(&philo->fork);
 	}
 	else
-		return (1);
+	{
+		pthread_mutex_lock(&philo->fork);
+		printf("%ld  %d  has takken right fork\n",what_time() - philo->timer, philo->id);
+		pthread_mutex_lock(&philo->left->fork);
+		printf("%ld  %d  has takken left fork\n",what_time() - philo->timer, philo->id);
+		printf("%ld  %d  is eating\n",what_time() - philo->timer, philo->id);
+		philo->last_eat = what_time();
+		ms_sleep(philo->data->t_eat);
+		pthread_mutex_unlock(&philo->fork);
+		pthread_mutex_unlock(&philo->left->fork);	
+	}
+	
+	
+	return (0);
 }
 
 void    status(t_philo *philo, int action)
@@ -104,9 +108,9 @@ void    status(t_philo *philo, int action)
 
 	if (action == 1)
 	{
-		pthread_mutex_lock(&philo->data.print);
+		pthread_mutex_lock(&philo->data->print);
 		printf("is eating\n");
-		pthread_mutex_unlock(&philo->data.print);
+		pthread_mutex_unlock(&philo->data->print);
 	}
 	if (action == 2)
 		printf("Has takken right fork\n");
@@ -117,5 +121,4 @@ void    status(t_philo *philo, int action)
 	if (action == 4)
 		printf("is sleeping\n");
 	// pthread_mutex_unlock(&philo->last_meal_mutex);
-	
 }

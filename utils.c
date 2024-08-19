@@ -3,30 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 20:24:57 by reahmz            #+#    #+#             */
-/*   Updated: 2024/07/21 20:59:56 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/08/19 20:02:20 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long    what_time()
+size_t    what_time()
 {
-    struct timeval  time;
+	struct timeval	time;
 
-    gettimeofday(&time, NULL);
-    return (time.tv_sec * 100 + time.tv_usec / 1000);
+	if (gettimeofday(&time, NULL) == -1)
+		write(2, "gettimeofday() error\n", 22);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-void    ms_sleep(int time)
+int    ms_sleep(size_t milliseconds)
 {
-    long    start;
+	size_t	start;
 
-    start = what_time();
-    while (what_time() - start < time)
-        usleep(100);
+	start = what_time();
+	while ((what_time() - start) < milliseconds)
+		usleep(500);
+	return (0);
 }
 
 void    ft_lst_add_back(t_philo *philo, t_philo *new, int id)
@@ -65,14 +67,7 @@ t_philo	*ft_lstnew(t_philo_data *data)
 	head = (t_philo *)malloc(sizeof(t_philo));
 	if (!head) 
 		return (NULL);
-	head->data.n_of_philos = data->n_of_philos;
-	head->data.t_die = data->t_die;
-	head->data.t_eat = data->t_eat;
-	head->data.t_must_eat = data->t_must_eat;
-	head->data.t_sleep = data->t_sleep;
-	head->data.must_flag = data->must_flag;
-	head->data.time = data->time;
-	head->data.last_meal = data->last_meal;
+	head->data = data;
     
 	head->right = NULL;
 	return (head);
@@ -81,20 +76,20 @@ void    take_fork(t_philo *philo)
 {
     pthread_mutex_lock(&philo->fork);
     status(philo,2);
-    if (philo->data.n_of_philos == 1)
-        ms_sleep(philo->data.t_die);
+    if (philo->data->n_of_philos == 1)
+        ms_sleep(philo->data->t_die);
     pthread_mutex_lock(&philo->left->fork);
     status(philo,2);
 }
-void    print_data(t_philo_data data)
+void    print_data(t_philo_data *data)
 {
-    printf("n of philo %d \n",data.n_of_philos);
-    printf("t_die %ld \n",data.t_die);
-    printf("t_eat %ld \n",data.t_eat);
-    printf("sleep %ld \n",data.t_sleep);
-    printf("must eat %ld \n",data.t_must_eat);
-    printf("last meal %ld \n",data.last_meal);
-    printf("time %ld \n",data.time);
+    printf("n of philo %d \n",data->n_of_philos);
+    printf("t_die %ld \n",data->t_die);
+    printf("t_eat %ld \n",data->t_eat);
+    printf("sleep %ld \n",data->t_sleep);
+    printf("must eat %ld \n",data->t_must_eat);
+    printf("last meal %ld \n",data->last_meal);
+    printf("time %ld \n",data->time);
     printf("---------------\n\n Next Data");
 }
 
