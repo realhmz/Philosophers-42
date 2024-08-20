@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/19 22:59:18 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/20 10:41:48 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_philo_data
 	long			must_flag;
 	size_t			time;
 	pthread_mutex_t	print;
-	long		last_meal;
+	pthread_mutex_t	time_mutex;
 	int			flag;
 }	t_philo_data;
 
@@ -51,15 +51,9 @@ typedef struct s_philo
 {
 	int				id;
 	long			cycle;
-	pthread_mutex_t	last_meal_mutex;
 	t_philo_data	*data;
 	pthread_t		philo;
-	int				taken;
-	long			timer;
 	long			last_eat;
-	int				thinking;
-	pthread_mutex_t	timer_mtx;
-	pthread_mutex_t	taken_mtx;
 	pthread_mutex_t	fork;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -95,4 +89,6 @@ t_philo	*ft_lstnew(t_philo_data *data);
 void    print_data(t_philo_data *data);
 void    status(t_philo *philo, int action);
 int    is_eating(t_philo *philo);
+int	ft_exit(t_philo *philo);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/08/19 22:59:45 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/20 10:41:58 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int	create_mutex(t_philo *param)
 		i++;
 	}
 	pthread_mutex_init(&param->data->print, NULL);
+	pthread_mutex_init(&param->data->time_mutex, NULL);
 	return (0);
 }
 
@@ -117,8 +118,15 @@ void	is_sleeping(t_philo *philo)
 {
 	status(philo, 4);
 	ms_sleep(philo->data->t_sleep);
+	status(philo, 3);
+
 }
 
+int	ft_exit(t_philo *philo)
+{
+	pthread_join(philo->philo, NULL);
+	return (1);
+}
 
 void	*routine(void *param)
 {
@@ -132,18 +140,9 @@ void	*routine(void *param)
 	}
 	while (1)
 	{
-
-		if (data->data->flag == 0)
-			exit (1);
 		is_eating(data);
 		is_sleeping(data);
-		if (data->data->flag == 0)
-			exit (1);
-		status(data, 3);
-		
-		
-		// pthread_mutex_lock(&data->data.print);
-		// pthread_mutex_unlock(&data->data.print);
+		// printf("in\n");
 	}
 	
 	return(data);

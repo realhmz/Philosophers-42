@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/19 23:00:08 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/20 10:45:36 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int    parcing(t_philo *philo, int ac, char** av)
 		philo->data->t_must_eat = ft_atoi(av[5]);
 		philo->data->must_flag = 1;
 	}
-	philo->data->last_meal = 0;
 	philo->data->time = 0;
 	philo->data->flag = 1;
 	// printf("philos %d\n", philo->data.n_of_philos);
@@ -61,7 +60,7 @@ int main(int ac, char **av)
 				printf("%ld  %d  is dead\n",what_time() - philo->data->time, philo->id);
 				pthread_mutex_unlock(&philo->data->print);
 				philo->data->flag = 0;
-				exit (1);
+				return (0);
 			}
 			philo = philo->right;
 		}
@@ -103,21 +102,25 @@ void    status(t_philo *philo, int action)
 	
 	size_t	time;
 
-	pthread_mutex_lock(&philo->data->print);
+	if (philo->data->flag == 0)
+	{
+		ft_exit(philo);
+		return ;
+	}
+	pthread_mutex_lock(&philo->data->time_mutex);
 	time = what_time() - philo->data->time;
+	pthread_mutex_unlock(&philo->data->time_mutex);
+	pthread_mutex_lock(&philo->data->print);
 	printf("%ld  ", time);
 	printf("%d  ",philo->id);
-
 	if (action == 1)
-	{
 		printf("is eating\n");
-	}
 	if (action == 2)
 		printf("Has takken right fork\n");
 	if (action == 5)
 		printf("Has takken left fork\n");
 	if (action == 3)
-		printf("is Thinking\n");
+		printf("is thinking\n");
 	if (action == 4)
 		printf("is sleeping\n");
 	pthread_mutex_unlock(&philo->data->print);

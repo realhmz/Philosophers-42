@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 20:24:57 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/19 20:02:20 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/20 09:46:20 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void    print_data(t_philo_data *data)
     printf("t_eat %ld \n",data->t_eat);
     printf("sleep %ld \n",data->t_sleep);
     printf("must eat %ld \n",data->t_must_eat);
-    printf("last meal %ld \n",data->last_meal);
     printf("time %ld \n",data->time);
     printf("---------------\n\n Next Data");
 }
