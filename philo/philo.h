@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/20 12:13:36 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 11:38:43 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,14 @@ typedef struct s_philo_data
 	pthread_mutex_t	print;
 	pthread_mutex_t	time_mutex;
 	pthread_mutex_t	finished_mutex;
-	int			flag;
+	pthread_mutex_t	flag_mutex;
+	int				flag;
 }	t_philo_data;
 
 typedef struct s_philo
 {
 	int				id;
+	int				is_dead;
 	long			cycle;
 	t_philo_data	*data;
 	pthread_t		philo;

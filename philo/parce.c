@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/20 12:46:59 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:18:39 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,24 @@ int	check_meals(t_philo *philo)
 	}
 	return (1);	
 }
+int	check_dead(t_philo *philo)
+{
+	int	i;
 
+	i = 0;
+	while (i < philo->data->n_of_philos)
+	{
+		if (!philo->is_dead)
+			return (1);
+		philo = philo->right;
+		i++;
+	}
+	return (0);
+}
 int main(int ac, char **av)
 {
 	t_philo *philo;
+	size_t	time;
 	philo = NULL;
 	if (ac != 5 && ac != 6)
 		return (1);
@@ -90,11 +104,21 @@ int main(int ac, char **av)
 				philo->data->finished_flag = 1;
 				return (0);
 			}
-			if ((what_time() - philo->last_eat) > philo->data->t_die)
+			pthread_mutex_lock(&philo->data->flag_mutex);
+			time = what_time() - philo->last_eat;
+			if ( time > philo->data->t_die)
 			{
 				philo->data->flag = 0;
+				pthread_mutex_unlock(&philo->data->flag_mutex);
+				while (check_dead(philo)) ;
+				pthread_mutex_lock(&philo->data->print);
+				pthread_mutex_lock(&philo->data->time_mutex);
+				printf("%ld  %d  is dead\n", time , philo->id);	
+				pthread_mutex_unlock(&philo->data->time_mutex);
+				pthread_mutex_unlock(&philo->data->print);
 				return (0);
 			}
+			pthread_mutex_unlock(&philo->data->flag_mutex);
 			philo = philo->right;
 		}
 	}
@@ -108,15 +132,15 @@ int    is_eating(t_philo *philo)
 		philo->data->finished_philos[philo->id] = 1;
 		pthread_mutex_unlock(&philo->data->finished_mutex);
 	}
-	if (status(philo, 0) || !philo->data->flag)
+	if (status(philo, 0))
 		return (1);
 	if (philo->id % 2 != 0)
 	{
 		pthread_mutex_lock(&philo->left->fork);
-		if (philo->data->flag == 2 || status(philo, 5))
+		if (status(philo, 5))
 			return (1);
 		pthread_mutex_lock(&philo->fork);
-		if(philo->data->flag == 2 || status(philo, 2) || status(philo, 1))
+		if(status(philo, 2) || status(philo, 1))
 			return (1);
 		philo->cycle++;
 		philo->last_eat = what_time();
@@ -127,10 +151,10 @@ int    is_eating(t_philo *philo)
 	else
 	{
 		pthread_mutex_lock(&philo->fork);
-		if (philo->data->flag == 2 || status(philo, 2))
+		if (status(philo, 2))
 			return (1);
 		pthread_mutex_lock(&philo->left->fork);
-		if(philo->data->flag == 2 || status(philo, 5) || status(philo, 1))
+		if(status(philo, 5) || status(philo, 1))
 			return (1);
 		philo->cycle++;
 		philo->last_eat = what_time();
@@ -147,16 +171,26 @@ int	status(t_philo *philo, int action)
 	
 	size_t	time;
 
+	// if (philo->data->flag == 2)
+	// {
+	// 	pthread_mutex_unlock(&philo->data->flag_mutex);
+	// 	return (1);
+	// }
+	pthread_mutex_lock(&philo->data->flag_mutex);
 	if (philo->data->flag == 0)
 	{
-		pthread_mutex_lock(&philo->data->print);
-		pthread_mutex_lock(&philo->data->time_mutex);
-		printf("%ld  %d  is dead\n",what_time() - philo->data->time, philo->id);
-		pthread_mutex_unlock(&philo->data->time_mutex);
-		pthread_mutex_unlock(&philo->data->print);
-		philo->data->flag = 2;
+		// pthread_mutex_lock(&philo->data->print);
+		// pthread_mutex_lock(&philo->data->time_mutex);
+		// printf("%ld  %d  is dead\n",what_time() - philo->data->time, philo->id);
+		// pthread_mutex_unlock(&philo->data->time_mutex);
+		// pthread_mutex_unlock(&philo->data->print);
+		
+		// philo->data->flag = 2;
+		pthread_mutex_unlock(&philo->data->flag_mutex);
 		return (1);
 	}
+	pthread_mutex_unlock(&philo->data->flag_mutex);
+	
 	if (action == 0)
 		return 0;
 	pthread_mutex_lock(&philo->data->time_mutex);

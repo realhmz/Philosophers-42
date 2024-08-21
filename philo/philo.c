@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/08/20 13:33:19 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:13:03 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int create_threads(t_philo *param)
 	while (i < param->data->n_of_philos)
 	{
 		param->cycle = 0;
+		param->is_dead = 0;
 		param->last_eat = what_time();
 		if (pthread_create(&param->philo,NULL, &routine, (void *)param) != 0)
 		{
@@ -93,19 +94,22 @@ int	create_mutex(t_philo *param)
 	}
 	pthread_mutex_init(&param->data->print, NULL);
 	pthread_mutex_init(&param->data->time_mutex, NULL);
+	pthread_mutex_init(&param->data->flag_mutex, NULL);
 	pthread_mutex_init(&param->data->finished_mutex, NULL);
 	return (0);
 }
 
 int	is_sleeping(t_philo *philo)
 {
-	if (philo->data->flag == 2 || status(philo, 0))
+	if (status(philo, 0))
 		return (1);
-	if (philo->data->flag == 2 || status(philo, 4))
+	if (status(philo, 4))
 		return (1);
 	ms_sleep(philo->data->t_sleep);
-	if (philo->data->flag == 2 || status(philo, 3) )
+	if (status(philo, 3))
 		return (1);
+	if (philo->data->n_of_philos == 3)
+		usleep(500);
 	return (0);
 }
 
@@ -114,18 +118,21 @@ int	ft_exit(t_philo *philo)
 	int	i;
 
 	i = 0;
-	if (philo->data->n_of_philos == 1)
-	{
-		pthread_detach(philo->philo);
-		return (1);
-	}
+	// if (philo->data->n_of_philos == 1)
+	// {
+	pthread_mutex_lock(&philo->data->flag_mutex);
+	philo->is_dead = 1;
+	pthread_mutex_unlock(&philo->data->flag_mutex);
+	pthread_detach(philo->philo);
+	// 	return (1);
+	// }
 	
-	while (i <= philo->data->n_of_philos)
-	{
-		pthread_detach(philo->philo);
-		philo = philo->right;
-		i++;
-	}
+	// while (i <= philo->data->n_of_philos)
+	// {
+	// 	pthread_detach(philo->philo);
+	// 	philo = philo->right;
+	// 	i++;
+	// }
 	return (1);
 }
 
@@ -137,7 +144,7 @@ void	*routine(void *param)
 	if (data->data->n_of_philos == 1)
 		ms_sleep(data->data->t_die);
 	else if (data->id % 2 != 0)
-		ms_sleep(50);
+		ms_sleep(40);
 	while (1)
 	{
 		if (data->data->finished_flag)
