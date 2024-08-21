@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/08/21 12:13:03 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:19:58 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,9 @@ int create_threads(t_philo *param)
 			printf("ERROR\n");
 			return (1);
 		}
+
+
+		
 		// param->data->last_meal = what_time();
 		// pthread_detach(param->philo);
 		param = param->right;
@@ -141,10 +144,11 @@ void	*routine(void *param)
 	t_philo *data;
 	data = (t_philo *)param;
 	
-	if (data->data->n_of_philos == 1)
-		ms_sleep(data->data->t_die);
-	else if (data->id % 2 != 0)
-		ms_sleep(40);
+	// if (data->data->n_of_philos == 1)
+	// 	ms_sleep(data->data->t_die);
+	 if (data->id % 2 != 0)
+	 	usleep(500);
+		// ms_sleep(20);
 	while (1)
 	{
 		if (data->data->finished_flag)

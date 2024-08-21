@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/21 12:18:39 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:11:41 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int    parcing(t_philo *philo, int ac, char** av)
 	memset(philo->data->finished_philos, 0, philo->data->n_of_philos+1 * sizeof(int));
 	return (0);
 }
-int	check_meals(t_philo *philo)
+int		check_meals(t_philo *philo)
 {
 	int	len;
 	int	i;
@@ -106,7 +106,7 @@ int main(int ac, char **av)
 			}
 			pthread_mutex_lock(&philo->data->flag_mutex);
 			time = what_time() - philo->last_eat;
-			if ( time > philo->data->t_die)
+			if (time > philo->data->t_die )
 			{
 				philo->data->flag = 0;
 				pthread_mutex_unlock(&philo->data->flag_mutex);
@@ -137,7 +137,7 @@ int    is_eating(t_philo *philo)
 	if (philo->id % 2 != 0)
 	{
 		pthread_mutex_lock(&philo->left->fork);
-		if (status(philo, 5))
+		if (status(philo, 5) || philo->data->n_of_philos == 1)
 			return (1);
 		pthread_mutex_lock(&philo->fork);
 		if(status(philo, 2) || status(philo, 1))
@@ -202,9 +202,9 @@ int	status(t_philo *philo, int action)
 	if (action == 1)
 		printf("is eating\n");
 	if (action == 2)
-		printf("Has takken right fork\n");
+		printf("Has takken a fork\n");
 	if (action == 5)
-		printf("Has takken left fork\n");
+		printf("Has takken a fork\n");
 	if (action == 3)
 		printf("is thinking\n");
 	if (action == 4)

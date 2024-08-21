@@ -1,7 +1,6 @@
 NAME = philo
 
-C_FLAGS = -Wall -Wextra
-
+C_FLAGS = -Wall -Wextra -Werror 
 SRC =	parce.c\
 		libft_utils.c\
 		philo.c\
