@@ -1,7 +1,7 @@
 NAME = philo
 
 
-C_FLAGS = -Wall -Wextra -Werror  
+C_FLAGS = -Wall -Wextra -Werror  -fsanitize=thread
 SRC =	parce.c\
 		libft_utils.c\
 		philo.c\

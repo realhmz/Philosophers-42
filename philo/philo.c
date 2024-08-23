@@ -68,7 +68,6 @@ int create_threads(t_philo *param)
 			return (1);
 		}
 		param = param->right;
-		param->data = param->left->data;
 		i++;
 	}
 		// pthread_join(param->philo, NULL);
@@ -141,24 +140,27 @@ void	*routine(void *param)
 	
 	// if (data->data->n_of_philos == 1)
 	// 	ms_sleep(data->data->t_die);
-	 if (data->id % 2 != 0)
+	 if (data->id % 2 == 0)
 	 	usleep(500);
 		// ms_sleep(20);
 	while (1)
 	{
+		pthread_mutex_lock(&data->data->finished_mutex);
 		if (data->data->finished_flag)
 		{
-			ft_exit(data);
-			return (NULL);
+			pthread_mutex_unlock(&data->data->finished_mutex);
+			// ft_exit(data);
+			return (1);
 		}
+		pthread_mutex_unlock(&data->data->finished_mutex);
 		if (is_eating(data))
 		{
-			ft_exit(data);
+			// ft_exit(data);
 			return (NULL);
 		}
 		else if (is_sleeping(data))
 		{
-			ft_exit(data);
+			// ft_exit(data);
 			return(NULL);
 		}
 		// printf("in\n");

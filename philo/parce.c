@@ -81,6 +81,23 @@ int	check_dead(t_philo *philo)
 	}
 	return (0);
 }
+
+void	detach_all(t_philo *philo)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = philo->data->n_of_philos;
+	while (i < j)
+	{
+		pthread_detach(philo->philo);
+		i++;
+		philo = philo->right;
+	}
+	
+}
+
 int main(int ac, char **av)
 {
 	t_philo *philo;
@@ -101,6 +118,7 @@ int main(int ac, char **av)
 		if (check_meals(philo))
 		{
 			philo->data->finished_flag = 1;
+			detach_all(philo);
 			return (0);
 		}
 		pthread_mutex_lock(&philo->data->flag_mutex);
@@ -108,18 +126,20 @@ int main(int ac, char **av)
 		if (time > philo->data->t_die )
 		{
 			philo->data->flag = 0;
+			printf("maat %d \n", philo->data->flag);
 			pthread_mutex_unlock(&philo->data->flag_mutex);
 			while (check_dead(philo)) ;
 			pthread_mutex_lock(&philo->data->print);
 			pthread_mutex_lock(&philo->data->time_mutex);
-			printf("%ld  %d  is dead\n", time , philo->id);	
+			printf("%ld  %d  is dead\n", what_time() - philo->last_eat , philo->id);	
 			pthread_mutex_unlock(&philo->data->time_mutex);
 			pthread_mutex_unlock(&philo->data->print);
+			detach_all(philo);
 			return (0);
 		}
-			pthread_mutex_unlock(&philo->data->flag_mutex);
+		pthread_mutex_unlock(&philo->data->flag_mutex);
 			philo = philo->right;
-		}
+	}
 }
 
 int    is_eating(t_philo *philo)
@@ -177,13 +197,7 @@ int	status(t_philo *philo, int action)
 	pthread_mutex_lock(&philo->data->flag_mutex);
 	if (philo->data->flag == 0)
 	{
-		// pthread_mutex_lock(&philo->data->print);
-		// pthread_mutex_lock(&philo->data->time_mutex);
-		// printf("%ld  %d  is dead\n",what_time() - philo->data->time, philo->id);
-		// pthread_mutex_unlock(&philo->data->time_mutex);
-		// pthread_mutex_unlock(&philo->data->print);
-		
-		// philo->data->flag = 2;
+
 		pthread_mutex_unlock(&philo->data->flag_mutex);
 		return (1);
 	}
@@ -193,8 +207,8 @@ int	status(t_philo *philo, int action)
 		return 0;
 	pthread_mutex_lock(&philo->data->time_mutex);
 	time = what_time() - philo->data->time;
-	pthread_mutex_unlock(&philo->data->time_mutex);
 	pthread_mutex_lock(&philo->data->print);
+	pthread_mutex_unlock(&philo->data->time_mutex);
 	printf("%ld  ", time);
 	printf("%d  ",philo->id);
 	if (action == 1)
