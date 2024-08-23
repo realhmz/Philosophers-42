@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/08/21 16:19:58 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 19:28:11 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,6 @@ int create_threads(t_philo *param)
 			printf("ERROR\n");
 			return (1);
 		}
-
-
-		
-		// param->data->last_meal = what_time();
-		// pthread_detach(param->philo);
 		param = param->right;
 		param->data = param->left->data;
 		i++;

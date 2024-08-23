@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/21 16:11:41 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/21 19:26:31 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,33 +95,31 @@ int main(int ac, char **av)
 		return (1);
 	if (philosophers(philo) != 0)
 		return (1);
-	while (1)
+
+	while (philo)
 	{
-		while (philo)
+		if (check_meals(philo))
 		{
-			if (check_meals(philo))
-			{
-				philo->data->finished_flag = 1;
-				return (0);
-			}
-			pthread_mutex_lock(&philo->data->flag_mutex);
-			time = what_time() - philo->last_eat;
-			if (time > philo->data->t_die )
-			{
-				philo->data->flag = 0;
-				pthread_mutex_unlock(&philo->data->flag_mutex);
-				while (check_dead(philo)) ;
-				pthread_mutex_lock(&philo->data->print);
-				pthread_mutex_lock(&philo->data->time_mutex);
-				printf("%ld  %d  is dead\n", time , philo->id);	
-				pthread_mutex_unlock(&philo->data->time_mutex);
-				pthread_mutex_unlock(&philo->data->print);
-				return (0);
-			}
+			philo->data->finished_flag = 1;
+			return (0);
+		}
+		pthread_mutex_lock(&philo->data->flag_mutex);
+		time = what_time() - philo->last_eat;
+		if (time > philo->data->t_die )
+		{
+			philo->data->flag = 0;
+			pthread_mutex_unlock(&philo->data->flag_mutex);
+			while (check_dead(philo)) ;
+			pthread_mutex_lock(&philo->data->print);
+			pthread_mutex_lock(&philo->data->time_mutex);
+			printf("%ld  %d  is dead\n", time , philo->id);	
+			pthread_mutex_unlock(&philo->data->time_mutex);
+			pthread_mutex_unlock(&philo->data->print);
+			return (0);
+		}
 			pthread_mutex_unlock(&philo->data->flag_mutex);
 			philo = philo->right;
 		}
-	}
 }
 
 int    is_eating(t_philo *philo)
