@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/28 14:38:14 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/28 15:59:37 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,13 @@ int		check_meals(t_philo *philo)
 	len = philo->data->n_of_philos;
 	while (i <= len)
 	{
+		pthread_mutex_lock(&philo->data->finished_mutex);
 		if (philo->data->finished_philos[i] == 0)
 		{
+			pthread_mutex_unlock(&philo->data->finished_mutex);
 			return (0);
 		}
+		pthread_mutex_unlock(&philo->data->finished_mutex);
 		i++;
 	}
 	return (1);	
@@ -74,7 +77,7 @@ int	check_dead(t_philo *philo)
 	while (i < philo->data->n_of_philos)
 	{
 		pthread_mutex_lock(&philo->dead);
-		if (!philo->is_dead)
+		if (philo->is_dead)
 		{
 			pthread_mutex_unlock(&philo->dead);
 			return (1);
@@ -93,12 +96,12 @@ void	detach_all(t_philo *philo)
 
 	i = 0;
 	j = philo->data->n_of_philos;
-	while (i < j)
-	{
-		pthread_detach(philo->philo);
-		i++;
-		philo = philo->right;
-	}
+	// while (i < j)
+	// {
+	// 	pthread_detach(philo->philo);
+	// 	i++;
+	// 	philo = philo->right;
+	// }
 	
 }
 int ft_free(t_philo *philo)
@@ -108,10 +111,10 @@ int ft_free(t_philo *philo)
 
 	i = 0;
 	len = philo->data->n_of_philos;
-	free(philo->data->finished_philos);
-	free(philo->data);
-	if (len == 1)
-		free(philo);
+	// free(philo->data->finished_philos);
+	// free(philo->data);
+	// if (len == 1)
+		// free(philo);
 	// while (i < len)
 	// {
 	// 	free(philo->left);
@@ -120,10 +123,39 @@ int ft_free(t_philo *philo)
 	// }
 	// philo->data = NULL;
 	
+	return (1);
+}
+
+int	check_time(t_philo *philo)
+{
+	size_t	time;
+	size_t	last_eat;
+
+	pthread_mutex_lock(&philo->last_eat_mutex);
+	last_eat = philo->last_eat;
+	pthread_mutex_unlock(&philo->last_eat_mutex);
+	time = what_time();
+	pthread_mutex_lock(&philo->data->time_mutex);
+	if (time - last_eat > philo->data->t_die)
+	{
+		pthread_mutex_lock(&philo->data->print);
+		printf("%ld  %d  is dead\n",time - philo->data->time, philo->id);
+		pthread_mutex_unlock(&philo->data->print);
+		pthread_mutex_unlock(&philo->data->time_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->time_mutex);
+
 	return (0);
 }
 int	monitor(t_philo *philo)
 {
+	if (check_meals(philo))
+		return(ft_free(philo));
+	if (check_dead(philo))
+		return(ft_free(philo));
+	if (check_time(philo))
+		return (ft_free(philo));
 	return (0);
 }
 int main(int ac, char **av)

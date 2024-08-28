@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 10:59:44 by het-taja          #+#    #+#             */
-/*   Updated: 2024/08/28 14:45:42 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/28 15:42:50 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	*routine(void *param)
 	
 	 if (philo->id % 2 == 0)
 	 	usleep(500);
-	while (philo)
+	while (1)
 	{
 		pthread_mutex_lock(&philo->data->finished_mutex);
 		if (philo->data->finished_flag)
@@ -80,8 +80,8 @@ int eat_even(t_philo *philo)
     if (status(philo, 1))
         return (1);
     ms_sleep(philo->data->t_eat);
-    pthread_mutex_unlock(&philo->fork);
     pthread_mutex_unlock(&philo->left->fork);
+    pthread_mutex_unlock(&philo->fork);
     return (0);
 }
 int odd_eat(t_philo *philo)
@@ -126,12 +126,14 @@ int is_eating(t_philo *philo)
 {
     if (status(philo, 0))
         return (1);
-    // printf("in\n");
     if (philo->data->must_flag)
     {
         pthread_mutex_lock(&philo->cycle_mutex);
         if (philo->data->t_must_eat == philo->cycle)
         {
+            pthread_mutex_lock(&philo->data->finished_mutex);
+            philo->data->finished_philos[philo->id] = 1;
+            pthread_mutex_unlock(&philo->data->finished_mutex);
             pthread_mutex_unlock(&philo->cycle_mutex);
             return (1);
         }
