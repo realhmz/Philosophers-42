@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/28 15:59:37 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:08:07 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,17 +126,24 @@ int ft_free(t_philo *philo)
 	return (1);
 }
 
+int	is_mat(t_philo *philo, size_t time)
+{
+	pthread_mutex_lock(&philo->last_eat_mutex);
+	if (time - philo->last_eat > philo->data->t_die)
+	{
+		pthread_mutex_unlock(&philo->last_eat_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->last_eat_mutex);
+	return (0);
+}
 int	check_time(t_philo *philo)
 {
 	size_t	time;
-	size_t	last_eat;
 
-	pthread_mutex_lock(&philo->last_eat_mutex);
-	last_eat = philo->last_eat;
-	pthread_mutex_unlock(&philo->last_eat_mutex);
-	time = what_time();
 	pthread_mutex_lock(&philo->data->time_mutex);
-	if (time - last_eat > philo->data->t_die)
+	time = what_time();
+	if (is_mat(philo, time))
 	{
 		pthread_mutex_lock(&philo->data->print);
 		printf("%ld  %d  is dead\n",time - philo->data->time, philo->id);
