@@ -5,7 +5,8 @@ C_FLAGS = -Wall -Wextra -Werror  -fsanitize=thread
 SRC =	parce.c\
 		libft_utils.c\
 		philo.c\
-		utils.c
+		utils.c\
+		routine.c
 
 OBJ = $(SRC:.c=.o)
 

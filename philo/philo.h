@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/08/21 19:25:02 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/28 14:36:46 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ typedef struct s_philo
 	pthread_t		philo;
 	long			last_eat;
 	pthread_mutex_t	fork;
+	pthread_mutex_t	dead;
+	pthread_mutex_t	cycle_mutex;
+	pthread_mutex_t	last_eat_mutex;
 	struct s_philo	*right;
 	struct s_philo	*left;
 }	t_philo;
@@ -92,10 +95,13 @@ void    ft_lst_add_back(t_philo *philo, t_philo *new, int id);
 // void    fill_data(t_philo *philo);
 int	create_list(t_philo *philo);
 t_philo	*ft_lstnew(t_philo_data *data);
+int eat(t_philo *philo, int action);
+int eat_even(t_philo *philo);
 void    print_data(t_philo_data *data);
 int	status(t_philo *philo, int action);
 int    is_eating(t_philo *philo);
+int odd_eat(t_philo *philo);
 int	ft_exit(t_philo *philo);
 int	is_sleeping(t_philo *philo);
 
-#endif
+#endif                                                                                                                                                                                 

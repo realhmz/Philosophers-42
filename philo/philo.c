@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/08/21 19:28:11 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/08/28 14:00:40 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int create_threads(t_philo *param)
 	{
 		param->cycle = 0;
 		param->is_dead = 0;
-		param->last_eat = what_time();
+		param->last_eat = param->data->time;
 		if (pthread_create(&param->philo,NULL, &routine, (void *)param) != 0)
 		{
 			printf("ERROR\n");
@@ -86,6 +86,7 @@ int	create_mutex(t_philo *param)
 				printf("ERROR\n");
 				return (1);
 			}
+		pthread_mutex_init(&param->dead, NULL);
 		param = param->right;
 		i++;
 	}
@@ -96,75 +97,3 @@ int	create_mutex(t_philo *param)
 	return (0);
 }
 
-int	is_sleeping(t_philo *philo)
-{
-	if (status(philo, 0))
-		return (1);
-	if (status(philo, 4))
-		return (1);
-	ms_sleep(philo->data->t_sleep);
-	if (status(philo, 3))
-		return (1);
-	if (philo->data->n_of_philos == 3)
-		usleep(500);
-	return (0);
-}
-
-int	ft_exit(t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	// if (philo->data->n_of_philos == 1)
-	// {
-	pthread_mutex_lock(&philo->data->flag_mutex);
-	philo->is_dead = 1;
-	pthread_mutex_unlock(&philo->data->flag_mutex);
-	pthread_detach(philo->philo);
-	// 	return (1);
-	// }
-	
-	// while (i <= philo->data->n_of_philos)
-	// {
-	// 	pthread_detach(philo->philo);
-	// 	philo = philo->right;
-	// 	i++;
-	// }
-	return (1);
-}
-
-void	*routine(void *param)
-{
-	t_philo *data;
-	data = (t_philo *)param;
-	
-	// if (data->data->n_of_philos == 1)
-	// 	ms_sleep(data->data->t_die);
-	 if (data->id % 2 == 0)
-	 	usleep(500);
-		// ms_sleep(20);
-	while (1)
-	{
-		pthread_mutex_lock(&data->data->finished_mutex);
-		if (data->data->finished_flag)
-		{
-			pthread_mutex_unlock(&data->data->finished_mutex);
-			// ft_exit(data);
-			return (1);
-		}
-		pthread_mutex_unlock(&data->data->finished_mutex);
-		if (is_eating(data))
-		{
-			// ft_exit(data);
-			return (NULL);
-		}
-		else if (is_sleeping(data))
-		{
-			// ft_exit(data);
-			return(NULL);
-		}
-		// printf("in\n");
-	}
-	
-	return(data);
-}
