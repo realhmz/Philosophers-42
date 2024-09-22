@@ -96,12 +96,12 @@ void	detach_all(t_philo *philo)
 
 	i = 0;
 	j = philo->data->n_of_philos;
-	// while (i < j)
-	// {
-	// 	pthread_detach(philo->philo);
-	// 	i++;
-	// 	philo = philo->right;
-	// }
+	while (i < j)
+	{
+		pthread_detach(philo->philo);
+		i++;
+		philo = philo->right;
+	}
 	
 }
 int ft_free(t_philo *philo)
@@ -111,18 +111,20 @@ int ft_free(t_philo *philo)
 
 	i = 0;
 	len = philo->data->n_of_philos;
-	// free(philo->data->finished_philos);
-	// free(philo->data);
-	// if (len == 1)
-		// free(philo);
-	// while (i < len)
-	// {
-	// 	free(philo->left);
-	// 	philo = philo->right;
-	// 	i++;
-	// }
-	// philo->data = NULL;
-	
+	free(philo->data->finished_philos);
+	free(philo->data);
+	if (len == 1)
+		free(philo);
+	else
+	{
+		while (i < len)
+		{
+			free(philo->left);
+			philo = philo->right;
+			i++;
+		}
+	}
+	philo->data = NULL;
 	return (1);
 }
 

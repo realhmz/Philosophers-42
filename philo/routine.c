@@ -40,11 +40,6 @@ void	*routine(void *param)
 {
 	t_philo *philo;
 	philo = (t_philo *)param;
-	if (philo->data->n_of_philos == 1)
-	{
-		status(philo, 5);
-		ms_sleep(philo->data->t_die);
-	}
 	if (philo->id % 2 == 0)
 	 	usleep(500);
 	while (1)
@@ -133,7 +128,7 @@ int is_eating(t_philo *philo)
 	if (philo->data->must_flag)
 	{
 		pthread_mutex_lock(&philo->cycle_mutex);
-		if (philo->data->t_must_eat == philo->cycle)
+		if (philo->data->t_must_eat == philo->cycle - 1)
 		{
 			pthread_mutex_lock(&philo->data->finished_mutex);
 			philo->data->finished_philos[philo->id] = 1;
