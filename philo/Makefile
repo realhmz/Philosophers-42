@@ -1,12 +1,14 @@
 NAME = philo
 
 
-C_FLAGS = -Wall -Wextra -Werror 
+C_FLAGS = -Wall -Wextra -Werror -fsanitize=thread
 SRC =	parce.c\
 		libft_utils.c\
 		philo.c\
 		utils.c\
-		routine.c
+		routine.c\
+		more_utils.c\
+		eat.c\
 
 OBJ = $(SRC:.c=.o)
 
@@ -19,7 +21,7 @@ $(NAME) : $(OBJ)
 	
 
 .c.o :
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -Wall -Wextra -Werror -c $< -o $@
 
 clean:
 	@rm -f $(OBJ)

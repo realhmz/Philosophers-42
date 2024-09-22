@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   libft_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reahmz <reahmz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:42:11 by reahmz            #+#    #+#             */
-/*   Updated: 2024/06/12 13:42:58 by reahmz           ###   ########.fr       */
+/*   Updated: 2024/09/22 23:35:38 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_isdigit(char c)
+{
+	if (c <= '9' && c >= '0')
+		return (0);
+	return (1);
+}
+
+int	atoi_checker(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str && str[i])
+	{
+		if (ft_isdigit(str[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 int	ft_atoi(const char *nptr)
 {
@@ -38,14 +59,12 @@ int	ft_atoi(const char *nptr)
 	return (sign * result);
 }
 
-int ft_strlen(char *str)
+int	ft_strlen(char *str)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (str && str[i])
-    {
-        i++;
-    }
-    return (i);
+	i = 0;
+	while (str && str[i])
+		i++;
+	return (i);
 }
