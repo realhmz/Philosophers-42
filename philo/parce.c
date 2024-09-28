@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/09/28 14:50:53 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/28 23:20:29 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,20 @@ int	check_dead(t_philo *philo)
 	}
 	return (0);
 }
+void	*monitor_check(void	*param)
+{
+	t_philo	*philo;
 
+	philo = (t_philo *)param;
+	while (philo->data->created != philo->data->n_of_philos) 
+	{
+		// printf("%ld\n", philo->data->created);
+		usleep(1000);
+	}
+	while (!monitor(philo))
+		philo = philo->right;
+	return (NULL);
+}
 int	main(int ac, char **av)
 {
 	t_philo	*philo;
@@ -123,9 +136,10 @@ int	main(int ac, char **av)
 	}
 	if (philosophers(philo) != 0)
 		return (1);
-	while (!monitor(philo))
-		philo = philo->right;
-	sleep (1);
+	// while (!monitor(philo))
+	// 	philo = philo->right;
+	// sleep (1);
+	// sleep(10);
 	ft_free(philo);
 	return (0);
 }

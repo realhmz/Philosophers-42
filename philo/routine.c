@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 10:59:44 by het-taja          #+#    #+#             */
-/*   Updated: 2024/09/23 00:16:44 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/28 23:21:57 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	ft_exit(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->dead);
 	philo->is_dead = 1;
+	// printf("hnaaaaaaaa\n");
 	pthread_mutex_unlock(&philo->dead);
 	return (1);
 }

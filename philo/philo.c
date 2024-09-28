@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/09/22 23:08:19 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/28 23:26:36 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ int	create_threads(t_philo *param)
 
 	i = 0;
 	param->data->time = what_time();
+	param->data->created = 0;
+	if (pthread_create(&param->data->checker, NULL, &monitor_check, (void *)param) != 0)
+		return (1);
 	while (i < param->data->n_of_philos)
 	{
 		param->cycle = 0;
@@ -64,9 +67,21 @@ int	create_threads(t_philo *param)
 			printf("ERROR\n");
 			return (1);
 		}
+		param->data->created++;
+		// pthread_join(param->philo, NULL);
+		// printf("%d  %ld  \n", i, param->data->created);
 		param = param->right;
 		i++;
 	}
+	i = 0;
+	while (i < param->data->n_of_philos)
+	{
+		pthread_join(param->philo, NULL);
+		param = param->right;	
+		i++;
+	}
+	
+	pthread_join(param->data->checker, NULL);
 	return (0);
 }
 
@@ -83,6 +98,8 @@ int	create_mutex(t_philo *param)
 			return (1);
 		}
 		pthread_mutex_init(&param->dead, NULL);
+		pthread_mutex_init(&param->cycle_mutex, NULL);
+		pthread_mutex_init(&param->last_eat_mutex, NULL);
 		param = param->right;
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:34:02 by reahmz            #+#    #+#             */
-/*   Updated: 2024/09/22 23:35:58 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/28 23:04:58 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_philo_data
 {
 	int				n_of_philos;
 	long			t_die;
+	long			created;
 	long			t_eat;
 	long			t_sleep;
 	long			t_must_eat;
@@ -33,6 +34,7 @@ typedef struct s_philo_data
 	int				finished_flag;
 	size_t			time;
 	pthread_mutex_t	print;
+	pthread_t		checker;
 	pthread_mutex_t	time_mutex;
 	pthread_mutex_t	finished_mutex;
 	pthread_mutex_t	flag_mutex;
@@ -82,5 +84,6 @@ int		monitor(t_philo *philo);
 int		check_meals(t_philo *philo);
 int		check_dead(t_philo *philo);
 int		atoi_checker(char *str);
+void	*monitor_check(void	*param);
 
 #endif
