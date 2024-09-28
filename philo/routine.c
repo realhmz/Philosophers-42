@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 10:59:44 by het-taja          #+#    #+#             */
-/*   Updated: 2024/09/22 22:57:53 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/23 00:16:44 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	*routine(void *param)
 		if (philo->data->finished_flag)
 		{
 			pthread_mutex_unlock(&philo->data->finished_mutex);
-			ft_exit(philo);
+			// ft_exit(philo);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&philo->data->finished_mutex);

@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/09/22 23:35:46 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/28 14:50:53 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	parcing(t_philo *philo, int ac, char **av)
 		return (1);
 	philo->data->finished_philos = malloc
 		(sizeof(int) * (philo->data->n_of_philos + 1));
+	if (!philo->data->finished_philos)
+	return (1);
 	philo->data->time = 0;
 	philo->data->finished_flag = 0;
 	philo->data->flag = 1;
@@ -107,7 +109,11 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	philo = malloc(sizeof(t_philo));
+	if (!philo)
+		return (1);
 	philo->data = malloc(sizeof(t_philo_data));
+	if (!philo->data)
+		return (1);
 	philo->left = NULL;
 	philo->right = NULL;
 	if (parcing(philo, ac, av) != 0)
@@ -119,5 +125,7 @@ int	main(int ac, char **av)
 		return (1);
 	while (!monitor(philo))
 		philo = philo->right;
+	sleep (1);
+	ft_free(philo);
 	return (0);
 }

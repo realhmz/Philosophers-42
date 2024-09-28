@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 22:47:53 by het-taja          #+#    #+#             */
-/*   Updated: 2024/09/22 23:01:48 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/09/28 14:49:47 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int	ft_free(t_philo *philo)
 {
 	int	i;
 	int	len;
-
+	t_philo	*tmp;
+	detach_all(philo);
 	i = 0;
 	len = philo->data->n_of_philos;
 	free(philo->data->finished_philos);
@@ -42,8 +43,10 @@ int	ft_free(t_philo *philo)
 	{
 		while (i < len)
 		{
-			free(philo->left);
+			tmp = philo;
 			philo = philo->right;
+			free(tmp);
+			tmp = NULL;
 			i++;
 		}
 	}
@@ -56,6 +59,9 @@ int	is_mat(t_philo *philo, long time)
 	pthread_mutex_lock(&philo->last_eat_mutex);
 	if (time - philo->last_eat > philo->data->t_die)
 	{
+		pthread_mutex_lock(&philo->data->flag_mutex);
+		philo->data->flag = 0;
+		pthread_mutex_unlock(&philo->data->flag_mutex);
 		pthread_mutex_unlock(&philo->last_eat_mutex);
 		return (1);
 	}
@@ -83,11 +89,11 @@ int	check_time(t_philo *philo)
 
 int	monitor(t_philo *philo)
 {
-	if (check_meals(philo))
-		return (ft_free(philo));
+	if (philo->data->must_flag && check_meals(philo))
+		return (1);
 	if (check_dead(philo))
-		return (ft_free(philo));
+		return (1);
 	if (check_time(philo))
-		return (ft_free(philo));
+		return (1);
 	return (0);
 }
