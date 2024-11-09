@@ -51,6 +51,7 @@ int	is_eating(t_philo *philo)
 
 int	eat_even(t_philo *philo)
 {
+
 	pthread_mutex_lock(&philo->left->fork);
 	if (status(philo, 2))
 	{

@@ -14,6 +14,8 @@
 
 int	check_args(t_philo_data *data, char **av)
 {
+	(void)av;
+	(void)data;
 	if (data->n_of_philos > 200 || data->n_of_philos <= 0)
 		return (1);
 	if (data->t_die <= 0 || data->t_eat <= 0 || data->t_sleep <= 0)
@@ -102,6 +104,7 @@ void	*monitor_check(void	*param)
 	t_philo	*philo;
 
 	philo = (t_philo *)param;
+	printf("checker %p\n", (void *)philo->data->checker);
 	while (philo->data->created != philo->data->n_of_philos) 
 	{
 		// printf("%ld\n", philo->data->created);

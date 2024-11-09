@@ -30,7 +30,6 @@ int	ft_exit(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->dead);
 	philo->is_dead = 1;
-	// printf("hnaaaaaaaa\n");
 	pthread_mutex_unlock(&philo->dead);
 	return (1);
 }
@@ -42,6 +41,13 @@ void	*routine(void *param)
 	philo = (t_philo *)param;
 	if (philo->id % 2 == 0)
 		usleep(500);
+	if (philo->data->n_of_philos == 1)
+	{
+		status(philo, 2);
+		ms_sleep(philo->data->t_die + 10);
+		if (status(philo, 0))
+			return (NULL);
+	}
 	while (1)
 	{
 		pthread_mutex_lock(&philo->data->finished_mutex);
