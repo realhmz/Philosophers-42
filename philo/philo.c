@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:55:53 by realhmz           #+#    #+#             */
-/*   Updated: 2024/09/28 23:26:36 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/11/09 17:37:29 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,19 @@ int	create_list(t_philo *philo)
 	}
 	return (0);
 }
+void	join_th(t_philo *param)
+{
+	int	i;
 
+	i = 0;
+	while (i < param->data->n_of_philos)
+	{
+		pthread_join(param->philo, NULL);
+		param = param->right;
+		i++;
+	}
+	pthread_join(param->data->checker, NULL);
+}
 int	create_threads(t_philo *param)
 {
 	int	i;
@@ -55,8 +67,6 @@ int	create_threads(t_philo *param)
 	i = 0;
 	param->data->time = what_time();
 	param->data->created = 0;
-	if (pthread_create(&param->data->checker, NULL, &monitor_check, (void *)param) != 0)
-		return (1);
 	while (i < param->data->n_of_philos)
 	{
 		param->cycle = 0;
@@ -67,21 +77,14 @@ int	create_threads(t_philo *param)
 			printf("ERROR\n");
 			return (1);
 		}
-		param->data->created++;
-		// pthread_join(param->philo, NULL);
-		// printf("%d  %ld  \n", i, param->data->created);
+		// param->data->created++;
 		param = param->right;
 		i++;
 	}
-	i = 0;
-	while (i < param->data->n_of_philos)
-	{
-		pthread_join(param->philo, NULL);
-		param = param->right;	
-		i++;
-	}
-	
-	pthread_join(param->data->checker, NULL);
+	if (pthread_create(&param->data->checker,
+			NULL, &monitor_check, (void *)param) != 0)
+		return (1);
+	join_th(param);
 	return (0);
 }
 

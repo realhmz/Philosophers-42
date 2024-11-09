@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 22:47:53 by het-taja          #+#    #+#             */
-/*   Updated: 2024/09/28 23:27:04 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/11/09 14:29:52 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,10 @@ void	detach_all(t_philo *philo)
 	}
 }
 
-int	ft_free(t_philo *philo)
+int	destroy(t_philo *philo)
 {
-	int	i;
 	int	len;
-	t_philo	*tmp;
-	// detach_all(philo);
-	i = 0;
+
 	len = philo->data->n_of_philos;
 	free(philo->data->finished_philos);
 	pthread_mutex_destroy(&philo->data->finished_mutex);
@@ -43,7 +40,18 @@ int	ft_free(t_philo *philo)
 	free(philo->data);
 	if (len == 1)
 		free(philo);
-	else
+	return (len);
+}
+
+int	ft_free(t_philo *philo)
+{
+	int		i;
+	int		len;
+	t_philo	*tmp;
+
+	i = 0;
+	len = destroy(philo);
+	if (len > 1)
 	{
 		while (i < len)
 		{
@@ -51,7 +59,6 @@ int	ft_free(t_philo *philo)
 			pthread_mutex_destroy(&philo->last_eat_mutex);
 			pthread_mutex_destroy(&philo->fork);
 			pthread_mutex_destroy(&philo->dead);
-
 			tmp = philo;
 			philo = philo->right;
 			free(tmp);
@@ -92,16 +99,5 @@ int	check_time(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->data->time_mutex);
-	return (0);
-}
-
-int	monitor(t_philo *philo)
-{
-	if (philo->data->must_flag && check_meals(philo))
-		return (1);
-	if (check_dead(philo))
-		return (1);
-	if (check_time(philo))
-		return (1);
 	return (0);
 }

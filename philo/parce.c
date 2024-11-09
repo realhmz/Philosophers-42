@@ -6,7 +6,7 @@
 /*   By: het-taja <het-taja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 13:33:51 by reahmz            #+#    #+#             */
-/*   Updated: 2024/09/28 23:20:29 by het-taja         ###   ########.fr       */
+/*   Updated: 2024/11/09 17:27:43 by het-taja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,11 @@ void	*monitor_check(void	*param)
 	t_philo	*philo;
 
 	philo = (t_philo *)param;
-	printf("checker %p\n", (void *)philo->data->checker);
-	while (philo->data->created != philo->data->n_of_philos) 
-	{
-		// printf("%ld\n", philo->data->created);
-		usleep(1000);
-	}
+	// (void)philo;
+	// while (philo->data->created != philo->data->n_of_philos) 
+	// {
+	// 	usleep(1000);
+	// }
 	while (!monitor(philo))
 		philo = philo->right;
 	return (NULL);

@@ -1,7 +1,7 @@
 NAME = philo
 
 
-C_FLAGS = -Wall -Wextra -Werror -pthread#-fsanitize=thread -g3
+C_FLAGS = -Wall -Wextra -Werror #-fsanitize=thread -g3
 SRC =	parce.c\
 		libft_utils.c\
 		philo.c\
@@ -9,6 +9,7 @@ SRC =	parce.c\
 		routine.c\
 		more_utils.c\
 		eat.c\
+		utils_2.c\
 
 OBJ = $(SRC:.c=.o)
 
