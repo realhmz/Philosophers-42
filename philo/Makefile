@@ -22,7 +22,7 @@ $(NAME) : $(OBJ)
 	
 
 .c.o :
-	$(CC) -Wall -Wextra -Werror -c $< -o $@
+	$(CC) $(C_FLAGS) -c $< -o $@
 
 clean:
 	@rm -f $(OBJ)
@@ -30,3 +30,5 @@ fclean:
 	@rm  -f $(NAME) $(OBJ)
 
 re:    fclean all
+
+.SECONDARY: $(OBJ)

@@ -14,8 +14,6 @@
 
 int	monitor(t_philo *philo)
 {
-	// (void)philo;
-	// return(1);
 	if (philo->data->must_flag && check_meals(philo))
 		return (1);
 	if (check_dead(philo))
@@ -23,4 +21,14 @@ int	monitor(t_philo *philo)
 	if (check_time(philo))
 		return (1);
 	return (0);
+}
+
+void	*monitor_check(void	*param)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)param;
+	while (!monitor(philo))
+		philo = philo->right;
+	return (NULL);
 }

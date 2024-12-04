@@ -54,15 +54,11 @@ void	*routine(void *param)
 		if (philo->data->finished_flag)
 		{
 			pthread_mutex_unlock(&philo->data->finished_mutex);
-			// ft_exit(philo);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&philo->data->finished_mutex);
 		if (is_eating(philo) || is_sleeping(philo))
-		{
-			ft_exit(philo);
-			return (NULL);
-		}
+			return (ft_exit(philo), NULL);
 	}
 	return (philo);
 }
@@ -78,7 +74,12 @@ int	status_half(t_philo *philo, int action)
 	pthread_mutex_unlock(&philo->data->time_mutex);
 	printf("%d  ", philo->id);
 	if (action == 1)
+	{
+		pthread_mutex_lock(&philo->last_eat_mutex);
+		philo->last_eat = what_time();
+		pthread_mutex_unlock(&philo->last_eat_mutex);
 		printf("is eating\n");
+	}
 	if (action == 2)
 		printf("Has takken a fork\n");
 	if (action == 5)

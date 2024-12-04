@@ -47,6 +47,7 @@ int	create_list(t_philo *philo)
 	}
 	return (0);
 }
+
 void	join_th(t_philo *param)
 {
 	int	i;
@@ -60,6 +61,7 @@ void	join_th(t_philo *param)
 	}
 	pthread_join(param->data->checker, NULL);
 }
+
 int	create_threads(t_philo *param)
 {
 	int	i;
@@ -77,7 +79,6 @@ int	create_threads(t_philo *param)
 			printf("ERROR\n");
 			return (1);
 		}
-		// param->data->created++;
 		param = param->right;
 		i++;
 	}

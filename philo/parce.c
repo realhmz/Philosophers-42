@@ -50,7 +50,7 @@ int	parcing(t_philo *philo, int ac, char **av)
 	philo->data->finished_philos = malloc
 		(sizeof(int) * (philo->data->n_of_philos + 1));
 	if (!philo->data->finished_philos)
-	return (1);
+		return (1);
 	philo->data->time = 0;
 	philo->data->finished_flag = 0;
 	philo->data->flag = 1;
@@ -99,20 +99,7 @@ int	check_dead(t_philo *philo)
 	}
 	return (0);
 }
-void	*monitor_check(void	*param)
-{
-	t_philo	*philo;
 
-	philo = (t_philo *)param;
-	// (void)philo;
-	// while (philo->data->created != philo->data->n_of_philos) 
-	// {
-	// 	usleep(1000);
-	// }
-	while (!monitor(philo))
-		philo = philo->right;
-	return (NULL);
-}
 int	main(int ac, char **av)
 {
 	t_philo	*philo;
@@ -138,10 +125,6 @@ int	main(int ac, char **av)
 	}
 	if (philosophers(philo) != 0)
 		return (1);
-	// while (!monitor(philo))
-	// 	philo = philo->right;
-	// sleep (1);
-	// sleep(10);
 	ft_free(philo);
 	return (0);
 }

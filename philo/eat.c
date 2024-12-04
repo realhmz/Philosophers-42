@@ -21,9 +21,6 @@ int	eat(t_philo *philo, int action)
 	pthread_mutex_lock(&philo->cycle_mutex);
 	philo->cycle++;
 	pthread_mutex_unlock(&philo->cycle_mutex);
-	pthread_mutex_lock(&philo->last_eat_mutex);
-	philo->last_eat = what_time();
-	pthread_mutex_unlock(&philo->last_eat_mutex);
 	return (0);
 }
 
@@ -51,7 +48,6 @@ int	is_eating(t_philo *philo)
 
 int	eat_even(t_philo *philo)
 {
-
 	pthread_mutex_lock(&philo->left->fork);
 	if (status(philo, 2))
 	{
